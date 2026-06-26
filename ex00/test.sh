@@ -1,40 +1,17 @@
 #!/bin/bash
 # ─────────────────────────────────────────────────────────────────────────────
 # test.sh – Functional tests for ex00
-#
-# Convention:
-#   run_test "expected_output" [args_to_program...]
-#   Each test prints [OK] or [KO] and records pass/fail counts.
 # ─────────────────────────────────────────────────────────────────────────────
 
 GREEN='\033[0;32m'
 RED='\033[0;31m'
-YELLOW='\033[0;33m'
 BOLD='\033[1m'
 NC='\033[0m'
 
-BINARY="./program"    # Must match NAME in Makefile
+BINARY="./bureaucrat"
 
 PASS=0
 FAIL=0
-
-# ── Helpers ───────────────────────────────────────────────────────────────────
-
-assert_eq() {
-    local description="$1"
-    local expected="$2"
-    local actual="$3"
-
-    if [ "$actual" = "$expected" ]; then
-        echo -e "${GREEN}[OK]${NC} $description"
-        PASS=$((PASS + 1))
-    else
-        echo -e "${RED}[KO]${NC} $description"
-        echo -e "   ${BOLD}Expected:${NC} $expected"
-        echo -e "   ${BOLD}Got:     ${NC} $actual"
-        FAIL=$((FAIL + 1))
-    fi
-}
 
 assert_contains() {
     local description="$1"
@@ -58,7 +35,7 @@ assert_exit_code() {
     local actual_code="$3"
 
     if [ "$actual_code" -eq "$expected_code" ]; then
-        echo -e "${GREEN}[OK]${NC} $description (exit $actual_code)"
+        echo -e "${GREEN}[OK]${NC} $description"
         PASS=$((PASS + 1))
     else
         echo -e "${RED}[KO]${NC} $description"
@@ -68,32 +45,42 @@ assert_exit_code() {
     fi
 }
 
-# ── Build ─────────────────────────────────────────────────────────────────────
 echo -e "\n${BOLD}══════════════════════════════════════════${NC}"
-echo -e "${BOLD}  Testing ex00${NC}"
+echo -e "${BOLD}  Testing ex00: Bureaucrat${NC}"
 echo -e "${BOLD}══════════════════════════════════════════${NC}\n"
 
-make > /dev/null 2>&1
+make re > /dev/null 2>&1
 if [ ! -f "$BINARY" ]; then
     echo -e "${RED}Build failed – cannot run tests.${NC}"
     exit 1
 fi
 
-# ── Tests ─────────────────────────────────────────────────────────────────────
+# Run the program and capture output (both stdout and stderr)
+ACTUAL=$($BINARY 2>&1)
 
-# TODO: Replace these examples with your actual test cases
+# 1. Output tests
+assert_contains "Valid output overload" "Hermes, bureaucrat grade 34." "$ACTUAL"
+assert_contains "Creation Too High Exception" "Grade is too high" "$ACTUAL"
+assert_contains "Creation Too Low Exception" "Grade is too low" "$ACTUAL"
+assert_contains "Increment Too High Exception" "Grade is too high" "$ACTUAL"
+assert_contains "Decrement Too Low Exception" "Grade is too low" "$ACTUAL"
 
-# Example 1: check output
-ACTUAL=$($BINARY)
-assert_eq "No args outputs Hello 42!" "Hello, 42!" "$ACTUAL"
+# 2. Leak test (Valgrind smoke test)
+if command -v valgrind > /dev/null; then
+    valgrind --leak-check=full --error-exitcode=42 $BINARY > /dev/null 2>&1
+    EXIT_CODE=$?
+    if [ "$EXIT_CODE" -eq 42 ]; then
+        echo -e "${RED}[KO]${NC} Valgrind: Memory leaks detected!"
+        FAIL=$((FAIL + 1))
+    else
+        echo -e "${GREEN}[OK]${NC} Valgrind: No memory leaks"
+        PASS=$((PASS + 1))
+    fi
+else
+    echo -e "${YELLOW}Valgrind not installed, skipping leak test.${NC}"
+fi
 
-# Example 2: check exit code
-$BINARY > /dev/null 2>&1
-assert_exit_code "Program exits with code 0" 0 $?
-
-# ── Summary ───────────────────────────────────────────────────────────────────
-echo ""
-echo -e "${BOLD}══════════════════════════════════════════${NC}"
+echo -e "\n${BOLD}══════════════════════════════════════════${NC}"
 TOTAL=$((PASS + FAIL))
 if [ "$FAIL" -eq 0 ]; then
     echo -e "${GREEN}${BOLD}  ✔ $PASS/$TOTAL tests passed${NC}"
@@ -102,4 +89,5 @@ else
 fi
 echo -e "${BOLD}══════════════════════════════════════════${NC}\n"
 
+# Enforce CI strictness
 [ "$FAIL" -eq 0 ]

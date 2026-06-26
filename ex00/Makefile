@@ -1,10 +1,8 @@
 CC      = c++
 CFLAGS  = -Wall -Wextra -Werror -std=c++98
 
-# ─── Edit these two variables for each exercise ───────────────────────────────
-NAME    = program          # Final binary name
-SRCS    = main.cpp         # Add more .cpp files here as needed
-# ─────────────────────────────────────────────────────────────────────────────
+NAME    = bureaucrat
+SRCS    = main.cpp Bureaucrat.cpp
 
 OBJS    = $(SRCS:.cpp=.o)
 
