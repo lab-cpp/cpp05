@@ -1,9 +1,7 @@
 #include "Form.hpp"
 #include <ostream>
 
-Form::Form() : _name("Default form"), _isSigned(false), _gradeToSign(150), _gradeToExecute(150) {
-
-}
+Form::Form() : _name("Default form"), _isSigned(false), _gradeToSign(150), _gradeToExecute(150) { }
 
 Form::Form(const std::string& name, int gradeToSign, int getGradeToExecute) 
 : _name(name), _isSigned(false), _gradeToSign(gradeToSign), _gradeToExecute(getGradeToExecute) {
