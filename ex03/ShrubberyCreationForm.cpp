@@ -32,6 +32,10 @@ void ShrubberyCreationForm::execute(const Bureaucrat& executor) const {
     }
 
     std::ofstream file((_target + "_shrubbery").c_str());
+	if (!file.is_open()) {
+		throw std::runtime_error("Cannot open file");
+	}
+
     file << "      /\\      " << std::endl;
     file << "     /\\*\\     " << std::endl;
     file << "    /\\O\\*\\    " << std::endl;
