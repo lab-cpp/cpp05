@@ -25,8 +25,11 @@ assert_contains() {
 }
 
 echo -e "\n${BOLD}══════════════════════════════════════════${NC}"
-echo -e "${BOLD}  Testing ex01: Form up, maggots!${NC}"
+echo -e "${BOLD}  Testing ex02: No, you need form 28B${NC}"
 echo -e "${BOLD}══════════════════════════════════════════${NC}\n"
+
+# Clean previous test files
+rm -f home_shrubbery
 
 make re > /dev/null 2>&1
 if [ ! -f "$BINARY" ]; then
@@ -36,11 +39,20 @@ fi
 
 ACTUAL=$($BINARY 2>&1)
 
-assert_contains "Form Creation High Exception" "Form grade is too high" "$ACTUAL"
-assert_contains "Form Creation Low Exception" "Form grade is too low" "$ACTUAL"
-assert_contains "Successful Sign Message" "CEO signed Tax Form" "$ACTUAL"
-assert_contains "Failed Sign Message" "Intern couldn't sign NDA because Form grade is too low." "$ACTUAL"
-assert_contains "Form state print" "Status: Signed" "$ACTUAL"
+assert_contains "Execution Without Signature" "because Form is not signed" "$ACTUAL"
+assert_contains "Shrubbery Execution" "Hermes executed ShrubberyCreationForm" "$ACTUAL"
+assert_contains "Robotomy Drilling Noise" "* Loud driling noises *" "$ACTUAL"
+assert_contains "Presidential Pardon Execution" "Has been pardoned by Zaphod Beeblebrox." "$ACTUAL"
+assert_contains "Low Grade Execution Failure" "because AForm grade is too low" "$ACTUAL"
+
+# Check if Shrubbery file was created
+if [ -f "home_shrubbery" ]; then
+    echo -e "${GREEN}[OK]${NC} Shrubbery File Creation"
+    PASS=$((PASS + 1))
+else
+    echo -e "${RED}[KO]${NC} Shrubbery File Creation (File not found)"
+    FAIL=$((FAIL + 1))
+fi
 
 if command -v valgrind > /dev/null; then
     valgrind --leak-check=full --error-exitcode=42 $BINARY > /dev/null 2>&1

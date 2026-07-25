@@ -26,6 +26,7 @@ class AForm {
         bool getIsSigned() const;
         int getGradeToSign() const;
         int getGradeToExecute() const;
+		void beSigned(const Bureaucrat& b);
 
         virtual void execute(Bureaucrat const & executor) const = 0;
 
@@ -38,6 +39,11 @@ class AForm {
             public:
                 virtual const char* what() const throw();
         };
+
+		class NotSignedException : public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
 };
 
 std::ostream& operator<<(std::ostream& os, const AForm& AForm);
