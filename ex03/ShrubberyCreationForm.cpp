@@ -3,6 +3,7 @@
 #include "ShrubberyCreationForm.hpp"
 #include <fstream>
 #include <ostream>
+#include <stdexcept>
 
 ShrubberyCreationForm::ShrubberyCreationForm() 
     : AForm("ShrubberyCreationForm", 145, 137), _target("default_target") {}
