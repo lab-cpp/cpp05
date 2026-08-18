@@ -9,7 +9,7 @@
 int main() {
     std::srand(std::time(NULL));
 
-    std::cout << "\n--- TEST 1: ShrubberyCreationForm ---" << std::endl;
+	// Shrubbery
     try {
         Bureaucrat hermes("Hermes", 137);
         ShrubberyCreationForm shrub("home");
@@ -21,7 +21,7 @@ int main() {
         std::cerr << e.what() << std::endl;
     }
 
-    std::cout << "\n--- TEST 2: RobotomyRequestForm ---" << std::endl;
+	// Robotomy
     try {
         Bureaucrat bender("Bender", 45);
         Bureaucrat fry("Fry", 72);
@@ -33,7 +33,7 @@ int main() {
         std::cerr << e.what() << std::endl;
     }
 
-    std::cout << "\n--- TEST 3: PresidentialPardonForm ---" << std::endl;
+	// Presidential Pardon
     try {
         Bureaucrat zaphod("Zaphod", 5);
         PresidentialPardonForm pardon("Ford Prefect");
@@ -44,7 +44,7 @@ int main() {
         std::cerr << e.what() << std::endl;
     }
 
-    std::cout << "\n--- TEST 4: Low Grade Execution ---" << std::endl;
+	// low grade tests
     try {
         Bureaucrat intern("Intern", 150);
         PresidentialPardonForm pardon2("Arthur Dent");

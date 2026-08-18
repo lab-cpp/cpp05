@@ -25,13 +25,7 @@ ShrubberyCreationForm& ShrubberyCreationForm::operator=(const ShrubberyCreationF
 
 ShrubberyCreationForm::~ShrubberyCreationForm() {}
 
-void ShrubberyCreationForm::execute(const Bureaucrat& executor) const {
-    if (!this->getIsSigned()) {
-        throw AForm::NotSignedException();
-    }
-    if (executor.getGrade() > this->getGradeToExecute()) {
-        throw AForm::GradeTooLowException();
-    }
+void ShrubberyCreationForm::executeAction() const {
     std::ofstream file((_target + "_shrubbery").c_str());
 	if (!file.is_open()) {
 		throw std::runtime_error("Cannot open file");
