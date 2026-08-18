@@ -3,6 +3,7 @@
 #include <iostream>
 
 int main() {
+	srand(time(NULL));
     std::cout << "--- TEST: Intern creating forms ---" << std::endl;
     
     Intern someRandomIntern;

@@ -1,123 +1,40 @@
-# cpp-template
+# C++ Module 05: Repetition and Exceptions
 
-> **GitHub Template** for 42 School C++ modules.
-> Every new module repo should be created from this template.
+## Overview
+This module introduces the concepts of **exceptions** in C++, along with further practice in **Object-Oriented Programming (OOP)**, **Orthodox Canonical Form**, and class interactions. The project focuses on designing a small simulation of a bureaucratic system with bureaucrats, forms, and interns, while managing errors using try-catch blocks and custom exceptions.
 
----
+## Concepts Learned
 
-## Repository Structure
+### 1. Exceptions in C++
+Exceptions provide a clean and robust way to handle errors in C++. Instead of returning error codes (as we often do in C), exceptions allow a function to `throw` an error that can be `catch`-ed by the calling code.
+- **Custom Exceptions**: We created custom exception classes (e.g., `GradeTooHighException`, `GradeTooLowException`) by inheriting from the standard `std::exception` class.
+- **`try/catch` Blocks**: These blocks allow you to attempt executing code that might throw an exception, and if one is thrown, you handle it in the `catch` block without crashing the entire program.
 
-```
-cpp-template/
-├── .github/
-│   └── workflows/
-│       └── ci.yml          ← GitHub Actions CI/CD pipeline
-├── .clang-format           ← Code style configuration
-├── .gitignore              ← Compiled artifacts ignored by git
-├── Makefile                ← Module-level build & test runner
-├── README.md               ← This file (replace with module notes)
-└── ex00/                   ← Example exercise scaffold
-    ├── Makefile
-    ├── main.cpp
-    └── test.sh
-```
+### 2. Abstract Classes and Pure Virtual Functions
+In Exercise 02, the `Form` class is refactored into an abstract class, `AForm`. 
+- An abstract class cannot be instantiated on its own.
+- It contains at least one **pure virtual function** (e.g., `virtual void execute(Bureaucrat const & executor) const = 0;`), which enforces derived classes to implement that specific function.
 
-Each module follows the pattern:
-```
-cppXX/
-├── Makefile      ← builds & tests all exercises
-├── README.md     ← theoretical notes for the module
-└── exNN/
-    ├── Makefile  ← 42 flags: -Wall -Wextra -Werror -std=c++98
-    ├── *.hpp
-    ├── *.cpp
-    └── test.sh   ← functional tests (run by CI)
-```
+### 3. Pointers to Member Functions
+In Exercise 03, the `Intern` class demonstrates the use of an array of pointers to member functions to dispatch form creation cleanly. This avoids complex and ugly `if/else if/else` logic when instantiating the right form class dynamically based on a string input.
 
----
+### 4. Orthodox Canonical Form
+The module continues to enforce the **Orthodox Canonical Form**, meaning that every class (unless explicitly stated, like exception classes) must include:
+1. Default Constructor
+2. Copy Constructor
+3. Copy Assignment Operator
+4. Destructor
 
-## CI/CD Pipeline
+## Project Structure
+- **ex00**: The `Bureaucrat` class, showcasing basic exception throwing for invalid grades.
+- **ex01**: The `Form` class, interacting with the Bureaucrat to simulate signing forms.
+- **ex02**: Expanding to specific concrete forms (`ShrubberyCreationForm`, `RobotomyRequestForm`, `PresidentialPardonForm`) which inherit from the abstract base class `AForm`. This introduces polymorphism and the `execute` functionality.
+- **ex03**: The `Intern` class, who exists solely to create forms using an array of pointers to member functions.
 
-The CI runs automatically on every push/PR to `main` or `develop`.
-
-| Job | What it does |
-|-----|-------------|
-| **Discover** | Scans for `ex*/Makefile` directories |
-| **Compile** | Builds each exercise in parallel (matrix) |
-| **Test** | Runs `test.sh` per exercise + Valgrind smoke test |
-| **Format** | Checks `clang-format` compliance (advisory warning) |
-| **Norm** | Checks forbidden keywords + strict 42 compile flags |
-| **CI Gate** | Blocks merge if compile / test / norm fail |
-
-### Status Badge
-Replace `ORG/REPO` with your organization and repository name:
-
-```markdown
-![CI](https://github.com/ORG/REPO/actions/workflows/ci.yml/badge.svg)
-```
-
----
-
-## Local Development
-
+## Compiling
+Navigate to the directory of the exercise you want to test and run `make`:
 ```bash
-# Build all exercises
 make
-
-# Run all test.sh scripts
-make test
-
-# Clean .o files
-make clean
-
-# Remove .o and binaries
-make fclean
-
-# Rebuild from scratch
-make re
-
-# List exercises discovered
-make list
+./[executable_name]
 ```
-
-Inside a single exercise:
-```bash
-cd ex00
-make          # compile
-./test.sh     # run functional tests
-make fclean   # clean up
-```
-
----
-
-## 42 Rules enforced by CI
-
-| Rule | Enforcement |
-|------|-------------|
-| `-Wall -Wextra -Werror -std=c++98` | **Build fails** if any warning exists |
-| `using namespace` forbidden | **Norm job fails** |
-| `friend` keyword forbidden | **Norm job fails** |
-| `printf / malloc / free` forbidden | **Norm job fails** |
-| No memory leaks | Valgrind smoke test (warning) |
-| Code style | `clang-format` check (advisory) |
-
----
-
-## Adding a New Exercise
-
-1. Copy `ex00/` to `ex01/`, `ex02/`, etc.
-2. Edit `NAME` and `SRCS` in the new `Makefile`.
-3. Write your implementation (`.cpp` / `.hpp`).
-4. Add your test cases to `test.sh`.
-5. Push – CI will pick up the new directory automatically.
-
----
-
-## Code Style
-
-Style is governed by `.clang-format` (Allman braces, 4-space indent, 100-col limit).
-
-Auto-fix all files:
-```bash
-find . -name "*.cpp" -o -name "*.hpp" | xargs clang-format -i
-```
+The codebase complies strictly with the C++98 standard.
